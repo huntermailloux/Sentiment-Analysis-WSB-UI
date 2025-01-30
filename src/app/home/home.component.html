@@ -1,4 +1,30 @@
-<div class="space">
-    <h1>Welcome to WSB Sentiment Analysis</h1>
-    <p>Created by Jacob Bondy, Luke Mullins, and Hunter Mailloux for COMP-4990 at the University of Windsor</p>
-  </div>
+<div class="container">
+  <mat-card class="card">
+    <h1 class="title">WSB Sentiment Analyzer</h1>
+    
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Search for a stock</mat-label>
+      <input
+        type="text"
+        matInput
+        [matAutocomplete]="auto"
+        [(ngModel)]="selectedStock"
+      />
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let stock of stocks" [value]="stock">
+          {{ stock }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="button"
+      (click)="getAnalysis()"
+      [disabled]="!selectedStock"
+    >
+      Get Analysis
+    </button>
+  </mat-card>
+</div>
