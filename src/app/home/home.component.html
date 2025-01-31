@@ -11,9 +11,9 @@
         [(ngModel)]="selectedStock"
       />
       <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let stock of stocks" [value]="stock">
-          {{ stock }}
-        </mat-option>
+        @for (stock of stocks; track stock) {
+          <mat-option [value]="stock">{{ stock }}</mat-option>
+        }
       </mat-autocomplete>
     </mat-form-field>
 
