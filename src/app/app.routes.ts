@@ -1,18 +1,18 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { AnaylsisComponent } from './anaylsis/anaylsis.component';
 
 export const routes: Routes = [
-    { 
-        path: '',
-        redirectTo: '/home',
-        pathMatch: 'full'
-    },
     {
-        path: 'home',
+        path: '',
         component: HomeComponent
     },
+    {
+        path: ':ticker',
+        component: AnaylsisComponent
+      },
     { 
         path: '**',
-        redirectTo: '/home'
+        redirectTo: ''
     }
 ];

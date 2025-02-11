@@ -6,12 +6,14 @@
       <mat-label>Search for a stock</mat-label>
       <input
         type="text"
+        placeholder="Select a stock"
         matInput
         [matAutocomplete]="auto"
         [(ngModel)]="selectedStock"
+        [formControl]="stockString"
       />
       <mat-autocomplete #auto="matAutocomplete">
-        @for (stock of stocks; track stock) {
+        @for (stock of filteredOptions | async; track stock) {
           <mat-option [value]="stock">{{ stock }}</mat-option>
         }
       </mat-autocomplete>
