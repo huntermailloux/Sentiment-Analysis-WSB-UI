@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { StockService } from '../../services/stock.service';
 
 
 @Component({
@@ -20,10 +21,15 @@ import { Router } from '@angular/router';
 export class AnaylsisComponent implements OnInit {
   stockTicker: string | null = '';
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router, private service: StockService) {}
 
   ngOnInit() {
     this.stockTicker = this.route.snapshot.paramMap.get('ticker');
+    this.service.getStock(this.stockTicker).subscribe({
+      next: (result) => {
+        console.log(result);
+      }
+    })
   }
 
   backToHome() {
