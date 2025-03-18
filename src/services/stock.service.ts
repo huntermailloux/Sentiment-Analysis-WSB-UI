@@ -13,4 +13,9 @@ export class StockService {
     let url = this.baseUrl + stock;
     return this.http.get<any>(url);
   }
+
+  getAllStocks() {
+    let url = this.baseUrl;
+    return this.http.get<any>(url);
+  }
 }

@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { map, Observable, startWith } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { StockService } from '../../services/stock.service';
 
 @Component({
   standalone: true,
@@ -31,13 +32,19 @@ export class HomeComponent implements OnInit {
   stockString = new FormControl('');
   filteredOptions: Observable<string[]> = new Observable();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private service: StockService) {}
 
   ngOnInit() {
     this.filteredOptions = this.stockString.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
     );
+
+    this.service.getAllStocks().subscribe({
+      next: (result) => {
+        console.log(result);
+      }
+    })
   }
 
   private _filter(value: string): string[] {
