@@ -10,7 +10,7 @@ export class StockService {
   constructor(private http: HttpClient) { }
 
   getStock(stock: any) {
-    let url = this.baseUrl + stock;
+    let url = this.baseUrl + 'ticker/' +  stock;
     return this.http.get<any>(url);
   }
 
