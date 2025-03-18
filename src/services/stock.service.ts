@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class StockService {
-  private baseUrl = "https://api.wsb-analysis.ca/api/";
+  private baseUrl = "https://www.api.wsb-analysis.ca/api/";
 
   constructor(private http: HttpClient) { }
 
