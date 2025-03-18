@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class StockService {
-  private baseUrl = "https://sentiment-analysis-wsb-api.vercel.app/";
+  private baseUrl = "https://api.wsb-analysis.ca/api/";
 
   constructor(private http: HttpClient) { }
 
@@ -15,7 +15,7 @@ export class StockService {
   }
 
   getAllStocks() {
-    let url = this.baseUrl;
+    let url = this.baseUrl + 'allPosts';
     return this.http.get<any>(url);
   }
 }
