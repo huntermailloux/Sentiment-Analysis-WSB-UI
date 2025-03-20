@@ -1,11 +1,81 @@
+<div class="loading-overlay" [@fadeOut]="loading ? 'visible' : 'hidden'">
+  <div class="loading-text" *ngIf="loading">Generating Analysis...</div>
+  <div class="loading-text" *ngIf="!loading">Ready!</div>
+</div>
+
 <div class="container">
-    <mat-card class="card">
-      <h1 class="title">{{stockTicker}} Analysis</h1>
-  
-      <mat-divider></mat-divider>
-  
-      <p class="placeholder">🚀 Stock sentiment analysis, bag of words, and more coming soon...</p>
-  
-      <button mat-raised-button color="accent" class="button" (click)="backToHome()">Back to Search</button>
-    </mat-card>
+  <mat-card class="card">
+    <button mat-mini-fab aria-label="Home button" (click)="backToHome()" class="button">
+      <mat-icon>home</mat-icon>
+    </button>
+    <h1 class="title">{{ stockTicker }} Analysis</h1>
+    <mat-divider></mat-divider>
+
+    <!-- Top Row - Stats -->
+    <div class="stats-container">
+      <div class="stat-box">
+        <h3>Average Sentiment</h3>
+        <p 
+        class="stat-value" 
+        [ngClass]="{
+          'sentiment-overw-neg': avgSentNumber >= -1 && avgSentNumber <= -0.9,
+          'sentiment-very-neg': avgSentNumber > -0.9 && avgSentNumber <= -0.7,
+          'sentiment-neg': avgSentNumber > -0.7 && avgSentNumber <= -0.3,
+          'sentiment-mostly-neg': avgSentNumber > -0.3 && avgSentNumber < -0.1,
+          'sentiment-slightly-neg': avgSentNumber >= -0.1 && avgSentNumber <= -0.05,
+          'sentiment-mixed': avgSentNumber > -0.05 && avgSentNumber < 0.05,
+          'sentiment-slightly-pos': avgSentNumber >= 0.05 && avgSentNumber <= 0.1,
+          'sentiment-mostly-pos': avgSentNumber > 0.1 && avgSentNumber <= 0.3,
+          'sentiment-pos': avgSentNumber > 0.3 && avgSentNumber <= 0.7,
+          'sentiment-very-pos': avgSentNumber > 0.7 && avgSentNumber <= 0.9,
+          'sentiment-overw-pos': avgSentNumber > 0.9 && avgSentNumber <= 1
+        }">{{ avgSentNumber }} ({{ avgSentString }})</p>
+      </div>
+      <div class="stat-box">
+        <h3>Total Posts</h3>
+        <p class="stat-value">{{ posts.length }}</p>
+      </div>
+      <div class="stat-box">
+        <h3>Average Confidence</h3>
+        <p class="stat-value" [ngClass]="{
+          'confidence-low': avgConfidence < 33,
+          'confidence-medium': avgConfidence >= 33 && avgConfidence < 80,
+          'confidence-high': avgConfidence >= 80
+        }">{{ avgConfidence }}%</p>
+      </div>
+    </div>
+
+    <!-- Graph Section -->
+    <div class="graphs-container">
+      <div class="graph">
+        <h3>Sentiment Over Time</h3>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+      <div class="graph">
+        <h3>Sentiment Distribution</h3>
+        <canvas id="sentimentDistChart"></canvas>
+      </div>
+      <div class="graph">
+        <h3>Post Volume Over Time</h3>
+        <canvas id="postVolumeChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Most Positive/Neutral/Negative Days -->
+    <div class="day-sentiment-container">
+      <div class="day-box">
+        <h3>Most Positive Day</h3>
+        <canvas id="positiveDayChart"></canvas>
+      </div>
+      <div class="day-box">
+        <h3>Most Neutral Day</h3>
+        <canvas id="neutralDayChart"></canvas>
+      </div>
+      <div class="day-box">
+        <h3>Most Negative Day</h3>
+        <canvas id="negativeDayChart"></canvas>
+      </div>
+    </div>
+
+  </mat-card>
 </div>

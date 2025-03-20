@@ -1,24 +1,28 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #121212; /* Dark mode background */
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background: #121212; /* Dark mode background */
+  padding: 20px 0;
+}
   
   .card {
     padding: 20px;
     width: 100%;
-    max-width: 500px;
+    max-width: 97vw;
+    height: 100%;
+    max-height: 90vh;
     text-align: center;
     background: #1e1e1e;
-    color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    color: rgb(236, 236, 236);
     border-radius: 10px;
   }
   
   .title {
-    margin-bottom: 10px;
+    margin: 0px 0px 10px 0px;
   }
   
   .placeholder {
@@ -28,7 +32,169 @@
   }
   
   .button {
-    margin-top: 20px;
-    width: 100%;
+    margin: 0px 0px -40px 0px;
+    max-width: 50px;
   }
   
+  /* Full-screen loading overlay */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgb(230, 18, 18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    z-index: 1000;
+  }
+
+  /* Stats Row */
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.stat-box {
+  width: 100%;
+  padding: 10px;
+  background: #252525;
+  border-radius: 10px;
+}
+
+.stat-box h3 {
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+/* Default Stat Styling */
+.stat-value {
+  font-size: 22px;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Overwhelmingly Negative */
+.sentiment-overw-neg {
+  color: #d32f2f !important; /* Dark Red */
+}
+
+/* Very Negative */
+.sentiment-very-neg {
+  color: #ff1744 !important; /* Red */
+}
+
+/* Negative */
+.sentiment-neg {
+  color: #ff5252 !important; /* Light Red */
+}
+
+/* Mostly Negative */
+.sentiment-mostly-neg {
+  color: #ff7043 !important; /* Dark Orange */
+}
+
+/* Slightly Negative */
+.sentiment-slightly-neg {
+  color: #ff9800 !important; /* Orange */
+}
+
+/* Mixed */
+.sentiment-mixed {
+  color: #bdbdbd !important; /* Gray */
+}
+
+/* Slightly Positive */
+.sentiment-slightly-pos {
+  color: #aed581 !important; /* Light Green */
+}
+
+/* Mostly Positive */
+.sentiment-mostly-pos {
+  color: #66bb6a !important; /* Medium Green */
+}
+
+/* Positive */
+.sentiment-pos {
+  color: #43a047 !important; /* Green */
+}
+
+/* Very Positive */
+.sentiment-very-pos {
+  color: #1b5e20 !important; /* Dark Green */
+}
+
+/* Overwhelmingly Positive */
+.sentiment-overw-pos {
+  color: #00c853 !important; /* Bright Green */
+}
+
+/* Confidence Colors */
+.confidence-low {
+  color: #ff5252 !important; /* Red (0-33%) */
+}
+.confidence-medium {
+  color: #ffb74d !important; /* Yellow (34-66%) */
+}
+.confidence-high {
+  color: #00e676 !important; /* Green (67-100%) */
+}
+
+/* Graphs Layout */
+.graphs-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.graph {
+  width: 100%;
+  height: 250px;
+  padding: 10px;
+  background: #252525;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Most Positive, Neutral, Negative Days Section */
+.day-sentiment-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.day-box {
+  width: 30%;
+  min-width: 250px;
+  height: 150px;
+  padding: 10px;
+  background: #252525;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .stats-container,
+  .graphs-container,
+  .day-sentiment-container {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .stat-box,
+  .graph,
+  .day-box {
+      width: 90%;
+      margin-bottom: 15px;
+  }
+}
