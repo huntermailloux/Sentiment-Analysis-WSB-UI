@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StockService } from '../../services/stock.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -21,7 +23,9 @@ import * as echarts from 'echarts';
     MatButtonModule,
     CommonModule,
     MatIconModule,
-    NgxEchartsModule
+    NgxEchartsModule,
+    MatSlideToggleModule,
+    FormsModule
   ],
   providers: [
     {
@@ -57,6 +61,8 @@ export class AnaylsisComponent implements OnInit {
 
   sentChartOptions: any;
   sentDistributionOptions: any;
+  postVolumeOptions: any;
+  isMonthlyView: boolean = true;
   
   get count(): number {
     return this._count;
@@ -64,7 +70,7 @@ export class AnaylsisComponent implements OnInit {
 
   set count(value: number) {
     this._count = value;
-    if (this.count == 5) {
+    if (this.count == 6) {
       this.loading = false;
     }
   }
@@ -84,6 +90,7 @@ export class AnaylsisComponent implements OnInit {
           this.getSentimentDays(this.posts);
           this.generateSentOverTime(this.posts);
           this.generateSentimentDistribution(this.posts);
+          this.generatePostVolumeChart(this.posts);
         }
         this.count++;
       }
@@ -198,29 +205,37 @@ export class AnaylsisComponent implements OnInit {
     this.count++;
   }
 
+  toggleTimeView() {
+    this.generateSentOverTime(this.posts);
+  }
+
   generateSentOverTime(posts: any) {
     posts = this.sortPostsByOldest(posts);
-    const counts: Record<string, { count: number; sentiment: number;}> = {};
-    var dates = [];
-    var sentimentAvgs: any[] = [];
-    let postCounts: number[] = [];
-
+    const counts: Record<string, { count: number; sentiment: number }> = {};
+    const postCounts: number[] = [];
+    let dates: string[] = [];
+    let sentimentAvgs: number[] = [];
+  
     for (const post of posts) {
-      if (!counts[post.date]) {
-        counts[post.date] = { count: 0, sentiment: 0 };
+      let dateKey = this.isMonthlyView
+        ? this.formatMonthYear(post.date)  // Format month as "Month Year"
+        : post.date; // Keep daily format (YYYY-MM-DD)
+  
+      if (!counts[dateKey]) {
+        counts[dateKey] = { count: 0, sentiment: 0 };
       }
-      counts[post.date].count++;
-      counts[post.date].sentiment += post.sentiment;
+      counts[dateKey].count++;
+      counts[dateKey].sentiment += post.sentiment;
     }
-
-    for (const [date, count] of Object.entries(counts)) { 
+  
+    for (const [date, count] of Object.entries(counts)) {
       dates.push(date);
       sentimentAvgs.push(Math.round((count.sentiment / count.count) * 100) / 100);
       postCounts.push(count.count);
     }
-
+  
     this.sentChartOptions = {
-      tooltip: { 
+      tooltip: {
         trigger: 'axis',
         formatter: (params: any) => {
           let sentiment = params[0].value;  // First series (sentiment)
@@ -237,32 +252,47 @@ export class AnaylsisComponent implements OnInit {
         data: dates,
         axisLabel: { color: '#fff' },
       },
-      yAxis: {
-        type: 'value',
-        min: -1,
-        max: 1,
-        axisLabel: { color: '#fff' },
-      },
+      yAxis: [
+        {
+          type: 'value',
+          min: -1,
+          max: 1,
+          axisLabel: { color: '#fff' },
+        },
+        {
+          type: 'value',
+          axisLabel: { color: '#fff' }, // Secondary Y-axis for post count
+        }
+      ],
       series: [
         {
+          name: 'Avg Sentiment',
           data: sentimentAvgs,
           type: 'line',
           smooth: true,
           lineStyle: { color: '#4caf50' },
+          yAxisIndex: 0,
         },
       ],
       dataZoom: [
         {
-          type: 'inside', // Allows zooming via scroll or pinch
+          type: 'inside',
         },
         {
-          type: 'slider', // Adds a slider below the chart for zooming
+          type: 'slider',
         }
       ]
     };
-
     this.count++;
   }
+  
+  // Convert "YYYY-MM-DD" to "Month Year"
+  formatMonthYear(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  
+
 
   generateSentimentDistribution(posts: any) {
     let sentimentCounts = { positive: 0, neutral: 0, negative: 0 };
@@ -285,6 +315,7 @@ export class AnaylsisComponent implements OnInit {
         bottom: 0,
         textStyle: { color: '#fff' }
       },
+      color: ['#40ba32', '#707070', '#f22222'],
       series: [
         {
           name: 'Sentiment Distribution',
@@ -302,6 +333,57 @@ export class AnaylsisComponent implements OnInit {
         }
       ]
     };
+    this.count++;
+  }
+
+  generatePostVolumeChart(posts: any) {
+    const counts: Record<string, number> = {};
+  
+    // Process posts to count occurrences per month
+    for (const post of posts) {
+      const date = new Date(post.date);
+      const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+  
+      if (!counts[monthYear]) {
+        counts[monthYear] = 0;
+      }
+      counts[monthYear]++;
+    }
+  
+    // Sort months chronologically
+    const sortedMonths = Object.keys(counts).sort((a, b) => 
+      new Date(a).getTime() - new Date(b).getTime()
+    );
+  
+    const postCounts = sortedMonths.map(month => counts[month]);
+  
+    // Configure ECharts options
+    this.postVolumeOptions = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      xAxis: {
+        type: 'category',
+        data: sortedMonths,
+        axisLabel: { color: '#fff' }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { color: '#fff' }
+      },
+      series: [
+        {
+          name: 'Posts',
+          type: 'bar',
+          data: postCounts,
+          itemStyle: {
+            color: '#4caf50'
+          }
+        }
+      ]
+    };
+  
     this.count++;
   }
 

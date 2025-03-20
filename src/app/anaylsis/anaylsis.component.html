@@ -57,10 +57,17 @@
     <!-- Line Graph Section -->
     <div class="graphs-container">
       <div class="graph line">
-        <h3>Sentiment Over Time</h3>
+        <!-- Title + Toggle in a flex container -->
+        <div class="toggle-container">
+          <h3>Sentiment Over Time</h3>
+          <mat-slide-toggle [(ngModel)]="isMonthlyView" (change)="toggleTimeView()" class="toggle">
+            Monthly View
+          </mat-slide-toggle>
+        </div>
         <div echarts [options]="sentChartOptions" class="line-chart"></div>
       </div>
     </div>
+    
 
     <!-- Most Positive/Neutral/Negative Days -->
     <div class="stats-container">
@@ -98,13 +105,13 @@
 
     <!-- Other Graphs -->
     <div class="graphs-container">
-      <div class="graph">
+      <div class="graph pie-chart">
         <h3>Sentiment Distribution</h3>
         <div echarts [options]="sentDistributionOptions" class="chart"></div>
       </div>
       <div class="graph">
         <h3>Post Volume Over Time</h3>
-        <canvas id="postVolumeChart"></canvas>
+        <div echarts [options]="postVolumeOptions" class="chart"></div>
       </div>
     </div>
 

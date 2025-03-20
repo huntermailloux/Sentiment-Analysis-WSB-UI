@@ -149,6 +149,22 @@
   text-align: center;
 }
 
+.pie-chart {
+  width: 40% !important;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.toggle {
+  margin-left: auto; /* Push toggle to the right */
+}
+
 
 .graph h3 {
   margin-bottom: 0px;
