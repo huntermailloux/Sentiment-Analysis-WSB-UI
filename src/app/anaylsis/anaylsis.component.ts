@@ -8,6 +8,8 @@ import {MatIconModule} from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { StockService } from '../../services/stock.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 
 @Component({
@@ -18,7 +20,14 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     MatDividerModule,
     MatButtonModule,
     CommonModule,
-    MatIconModule
+    MatIconModule,
+    NgxEchartsModule
+  ],
+  providers: [
+    {
+      provide: NGX_ECHARTS_CONFIG,
+      useValue: { echarts },
+    },
   ],
   templateUrl: './anaylsis.component.html',
   styleUrl: './anaylsis.component.scss',
@@ -39,13 +48,23 @@ export class AnaylsisComponent implements OnInit {
   avgSentNumber: any;
   avgConfidence: any;
 
+  mostPosDate: string = '';
+  mostNeutDate: string = '';
+  mostNegDate: string = '';
+  posDatePosts: number = 0;
+  neutDatePosts: number = 0;
+  negDatePosts: number = 0;
+
+  sentChartOptions: any;
+  sentDistributionOptions: any;
+  
   get count(): number {
     return this._count;
   }
 
   set count(value: number) {
     this._count = value;
-    if (this.count == 2) {
+    if (this.count == 5) {
       this.loading = false;
     }
   }
@@ -60,16 +79,23 @@ export class AnaylsisComponent implements OnInit {
     this.service.getStock(this.stockTicker).subscribe({
       next: (result) => {
         if (result && result.posts) {
-          this.posts = this.sortPostsByDate(result.posts);
+          this.posts = this.sortPostsByNewest(result.posts);
           this.calculateAvgs(this.posts);
+          this.getSentimentDays(this.posts);
+          this.generateSentOverTime(this.posts);
+          this.generateSentimentDistribution(this.posts);
         }
         this.count++;
       }
     })
   }
 
-  sortPostsByDate(posts: any[]): any[] {
+  sortPostsByNewest(posts: any[]): any[] {
     return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  sortPostsByOldest(posts: any[]): any[] {
+    return posts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
   calculateAvgs(posts: any) {
@@ -123,6 +149,159 @@ export class AnaylsisComponent implements OnInit {
     }
     this.avgSentNumber = Math.round(avgSent * 1000) / 1000;
     this.avgConfidence = (Math.round(avgConf * 100) / 100);
+    this.count++;
+  }
+
+  getSentimentDays(data: any) {
+    const sentimentCounts: Record<string, { positive: number; neutral: number; negative: number }> = {};
+  
+    for (const post of data) {
+      if (!sentimentCounts[post.date]) {
+        sentimentCounts[post.date] = { positive: 0, neutral: 0, negative: 0 };
+      }
+      if (post.sentiment === 1) {
+        sentimentCounts[post.date].positive++;
+      } else if (post.sentiment === 0) {
+        sentimentCounts[post.date].neutral++;
+      } else if (post.sentiment === -1) {
+        sentimentCounts[post.date].negative++;
+      }
+    }
+  
+    let mostPositiveDate = "No data available";
+    let mostNeutralDate = "No data available";
+    let mostNegativeDate = "No data available";
+    let maxPositive = 0, maxNeutral = 0, maxNegative = 0;
+  
+    for (const [date, counts] of Object.entries(sentimentCounts)) {
+      if (counts.positive > maxPositive) {
+        maxPositive = counts.positive;
+        mostPositiveDate = date;
+      }
+      if (counts.neutral > maxNeutral) {
+        maxNeutral = counts.neutral;
+        mostNeutralDate = date;
+      }
+      if (counts.negative > maxNegative) {
+        maxNegative = counts.negative;
+        mostNegativeDate = date;
+      }
+    }
+    this.mostNegDate = mostNegativeDate;
+    this.mostNeutDate = mostNeutralDate;
+    this.mostPosDate = mostPositiveDate;
+
+    if (mostPositiveDate != "No data available") this.posDatePosts = sentimentCounts[mostPositiveDate].positive;
+    if (mostNeutralDate != "No data available") this.neutDatePosts = sentimentCounts[mostNeutralDate].neutral;
+    if (mostNegativeDate != "No data available") this.negDatePosts = sentimentCounts[mostNegativeDate].negative;
+
+    this.count++;
+  }
+
+  generateSentOverTime(posts: any) {
+    posts = this.sortPostsByOldest(posts);
+    const counts: Record<string, { count: number; sentiment: number;}> = {};
+    var dates = [];
+    var sentimentAvgs: any[] = [];
+    let postCounts: number[] = [];
+
+    for (const post of posts) {
+      if (!counts[post.date]) {
+        counts[post.date] = { count: 0, sentiment: 0 };
+      }
+      counts[post.date].count++;
+      counts[post.date].sentiment += post.sentiment;
+    }
+
+    for (const [date, count] of Object.entries(counts)) { 
+      dates.push(date);
+      sentimentAvgs.push(Math.round((count.sentiment / count.count) * 100) / 100);
+      postCounts.push(count.count);
+    }
+
+    this.sentChartOptions = {
+      tooltip: { 
+        trigger: 'axis',
+        formatter: (params: any) => {
+          let sentiment = params[0].value;  // First series (sentiment)
+          let index = params[0].dataIndex;  // Get index to match post count
+          let postCount = postCounts[index]; // Get corresponding post count
+  
+          return `${params[0].axisValue}<br/>
+                  Avg Sentiment: ${sentiment}<br/>
+                  Posts: ${postCount}`;
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: dates,
+        axisLabel: { color: '#fff' },
+      },
+      yAxis: {
+        type: 'value',
+        min: -1,
+        max: 1,
+        axisLabel: { color: '#fff' },
+      },
+      series: [
+        {
+          data: sentimentAvgs,
+          type: 'line',
+          smooth: true,
+          lineStyle: { color: '#4caf50' },
+        },
+      ],
+      dataZoom: [
+        {
+          type: 'inside', // Allows zooming via scroll or pinch
+        },
+        {
+          type: 'slider', // Adds a slider below the chart for zooming
+        }
+      ]
+    };
+
+    this.count++;
+  }
+
+  generateSentimentDistribution(posts: any) {
+    let sentimentCounts = { positive: 0, neutral: 0, negative: 0 };
+  
+    for (const post of posts) {
+      if (post.sentiment > 0) {
+        sentimentCounts.positive++;
+      } else if (post.sentiment === 0) {
+        sentimentCounts.neutral++;
+      } else if (post.sentiment < 0) {
+        sentimentCounts.negative++;
+      }
+    }
+
+    this.sentDistributionOptions = {
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        bottom: 0,
+        textStyle: { color: '#fff' }
+      },
+      series: [
+        {
+          name: 'Sentiment Distribution',
+          type: 'pie',
+          radius: '50%',
+          data: [
+            { value: sentimentCounts.positive, name: 'Positive' },
+            { value: sentimentCounts.neutral, name: 'Neutral' },
+            { value: sentimentCounts.negative, name: 'Negative' }
+          ],
+          label: {
+            color: '#fff',
+            formatter: '{b}: {d}%'
+          }
+        }
+      ]
+    };
     this.count++;
   }
 

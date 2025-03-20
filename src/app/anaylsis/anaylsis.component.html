@@ -1,6 +1,15 @@
 <div class="loading-overlay" [@fadeOut]="loading ? 'visible' : 'hidden'">
-  <div class="loading-text" *ngIf="loading">Generating Analysis...</div>
-  <div class="loading-text" *ngIf="!loading">Ready!</div>
+  <div class="load-container">
+    <div class="square-container">
+        <div class="square square1"></div>
+        <div class="square square2"></div>
+        <div class="square square3"></div>
+        <div class="logo">
+        <img src="WSBlogo.png" alt="Logo">
+        </div>
+    </div>
+    <span class="loading">Loading analysis...</span>
+  </div>
 </div>
 
 <div class="container">
@@ -45,15 +54,53 @@
       </div>
     </div>
 
-    <!-- Graph Section -->
+    <!-- Line Graph Section -->
+    <div class="graphs-container">
+      <div class="graph line">
+        <h3>Sentiment Over Time</h3>
+        <div echarts [options]="sentChartOptions" class="line-chart"></div>
+      </div>
+    </div>
+
+    <!-- Most Positive/Neutral/Negative Days -->
+    <div class="stats-container">
+      <div class="stat-box">
+        <h3>Most Positive Day</h3>
+        @if (mostPosDate != 'No data available') {
+          <p class="stat-value day">{{mostPosDate | date:'longDate'}}</p>
+          <p class="small">({{posDatePosts}} posts)</p>
+        }
+        @else {
+          <p class="stat-value day">{{mostPosDate}}</p>
+        }
+      </div>
+      <div class="stat-box">
+        <h3>Most Neutral Day</h3>
+        @if (mostNeutDate != 'No data available') {
+          <p class="stat-value day">{{mostNeutDate | date:'longDate'}}</p>
+          <p class="small">({{neutDatePosts}} posts)</p>
+        }
+        @else {
+          <p class="stat-value day">{{mostNeutDate}}</p>
+        }
+      </div>
+      <div class="stat-box">
+        <h3>Most Negative Day</h3>
+        @if (mostNegDate != 'No data available') {
+          <p class="stat-value day">{{mostNegDate | date:'longDate'}}</p>
+          <p class="small">({{negDatePosts}} posts)</p>
+        }
+        @else {
+          <p class="stat-value day">{{mostNegDate}}</p>
+        }
+      </div>
+    </div>
+
+    <!-- Other Graphs -->
     <div class="graphs-container">
       <div class="graph">
-        <h3>Sentiment Over Time</h3>
-        <canvas id="sentimentChart"></canvas>
-      </div>
-      <div class="graph">
         <h3>Sentiment Distribution</h3>
-        <canvas id="sentimentDistChart"></canvas>
+        <div echarts [options]="sentDistributionOptions" class="chart"></div>
       </div>
       <div class="graph">
         <h3>Post Volume Over Time</h3>
@@ -61,21 +108,6 @@
       </div>
     </div>
 
-    <!-- Most Positive/Neutral/Negative Days -->
-    <div class="day-sentiment-container">
-      <div class="day-box">
-        <h3>Most Positive Day</h3>
-        <canvas id="positiveDayChart"></canvas>
-      </div>
-      <div class="day-box">
-        <h3>Most Neutral Day</h3>
-        <canvas id="neutralDayChart"></canvas>
-      </div>
-      <div class="day-box">
-        <h3>Most Negative Day</h3>
-        <canvas id="negativeDayChart"></canvas>
-      </div>
-    </div>
 
   </mat-card>
 </div>
