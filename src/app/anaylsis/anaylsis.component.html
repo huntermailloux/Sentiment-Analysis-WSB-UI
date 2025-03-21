@@ -139,5 +139,74 @@
       </div>
     </div>
 
+    <div class="table-container">
+      <h2>Post Data Table</h2>
+    
+      <!-- Filter Section -->
+      <div class="filters">
+        <!-- Date Range Picker -->
+        <mat-form-field appearance="outline">
+          <mat-label>Filter by Date Range</mat-label>
+          <mat-date-range-input [formGroup]="dateRangeForm" [rangePicker]="dateRangePicker">
+            <input matStartDate formControlName="start" placeholder="Start date">
+            <input matEndDate formControlName="end" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+        </mat-form-field>
+
+        <!-- Sentiment Filter -->
+        <mat-form-field appearance="outline">
+          <mat-label>Filter by Sentiment</mat-label>
+          <mat-select [(ngModel)]="filterSentiment" (selectionChange)="filterTable()">
+            <mat-option value="">All</mat-option>
+            <mat-option value="1">Positive</mat-option>
+            <mat-option value="0">Neutral</mat-option>
+            <mat-option value="-1">Negative</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Reset Button -->
+        <button mat-button color="warn" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    
+      <!-- Table Displaying Posts -->
+      <table mat-table [dataSource]="filteredPosts" class="mat-elevation-z8">
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef class="date-column">Date</th>
+          <td mat-cell *matCellDef="let post" class="date-column">{{ post.date | date:'mediumDate' }}</td>
+        </ng-container>
+    
+        <!-- Sentiment Column -->
+        <ng-container matColumnDef="sentiment">
+          <th mat-header-cell *matHeaderCellDef class="sentiment-column">Sentiment</th>
+          <td mat-cell *matCellDef="let post" class="sentiment-column">
+            <span [ngClass]="{
+              'sentiment-pos': post.sentiment == 1,
+              'sentiment-neut': post.sentiment == 0,
+              'sentiment-neg': post.sentiment == -1
+            }">{{ post.sentiment === 1 ? 'Positive' : post.sentiment === 0 ? 'Neutral' : 'Negative' }}</span>
+          </td>
+        </ng-container>
+    
+        <!-- Confidence Column -->
+        <ng-container matColumnDef="confidence">
+          <th mat-header-cell *matHeaderCellDef class="confidence-column">Confidence</th>
+          <td mat-cell *matCellDef="let post" class="confidence-column">{{ (post.confidence * 100) | number:'1.0-2' }}%</td>
+        </ng-container>
+
+        <!-- Original Post Column -->
+        <ng-container matColumnDef="originalPost">
+          <th mat-header-cell *matHeaderCellDef class="originalPost-column">Original Post</th>
+          <td mat-cell *matCellDef="let post" class="originalPost-column">{{ post.originalPost }}</td>
+        </ng-container>
+    
+        <!-- Table Header and Body -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
   </mat-card>
 </div>

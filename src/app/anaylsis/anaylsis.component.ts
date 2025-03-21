@@ -5,8 +5,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatSelectModule} from '@angular/material/select';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StockService } from '../../services/stock.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -31,7 +38,14 @@ interface Word {
     MatIconModule,
     NgxEchartsModule,
     MatSlideToggleModule,
-    FormsModule
+    FormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [
     {
@@ -99,6 +113,14 @@ export class AnaylsisComponent implements OnInit {
   postVolumeOptions: any;
   isMonthlyView: boolean = true;
 
+  filteredPosts = new MatTableDataSource<any>([]);  // Filtered table data
+  dateRangeForm = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null)
+  });
+  filterSentiment: string = '';
+  displayedColumns: string[] = ['date', 'sentiment', 'confidence', 'originalPost'];
+
   wordData: { [key: string]: any[] } = { positive: [], neutral: [], negative: [] };
   
   get count(): number {
@@ -107,7 +129,7 @@ export class AnaylsisComponent implements OnInit {
 
   set count(value: number) {
     this._count = value;
-    if (this.count == 7) {
+    if (this.count == 8) {
       this.loading = false;
     }
   }
@@ -117,6 +139,10 @@ export class AnaylsisComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private service: StockService) {}
 
   ngOnInit() {
+
+    this.dateRangeForm.valueChanges.subscribe(() => {
+      this.filterTable();
+    });
 
     this.stockTicker = this.route.snapshot.paramMap.get('ticker');
     this.service.getStock(this.stockTicker).subscribe({
@@ -129,6 +155,7 @@ export class AnaylsisComponent implements OnInit {
           this.generateSentimentDistribution(this.posts);
           this.generatePostVolumeChart(this.posts);
           this.generateWordClouds(this.posts);
+          this.loadTable(this.posts);
         }
         else {
           this.backToHome();
@@ -548,6 +575,33 @@ export class AnaylsisComponent implements OnInit {
 
   hasWords(sentiment: string): boolean {
     return (this.wordData[sentiment] ?? []).length > 0;
+  }
+
+  loadTable(posts: any) {
+    this.sortPostsByNewest(posts);
+    this.filteredPosts.data = posts;
+    this.count++;
+  }
+
+  filterTable() {
+    const startDate = this.dateRangeForm.value.start;
+    const endDate = this.dateRangeForm.value.end;
+
+    this.filteredPosts.data = this.posts.filter(post => {
+      const postDate = new Date(post.date);
+
+      const matchesStartDate = !startDate || postDate >= startDate;
+      const matchesEndDate = !endDate || postDate <= endDate;
+      const matchesSentiment = this.filterSentiment === '' || post.sentiment.toString() === this.filterSentiment;
+
+      return matchesStartDate && matchesEndDate && matchesSentiment;
+    });
+  }
+
+  resetFilters() {
+    this.dateRangeForm.reset(); // Reset date range
+    this.filterSentiment = ''; // Reset sentiment filter
+    this.filterTable(); // Refresh table
   }
 
   backToHome() {
