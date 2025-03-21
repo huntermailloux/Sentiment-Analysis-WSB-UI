@@ -51,6 +51,33 @@ interface Word {
 })
 export class AnaylsisComponent implements OnInit {
   stocks: any[] = ['AA', 'AAL', 'AAPL', 'ABBV', 'ABNB', 'ACHR', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK', 'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AKAM', 'ALB', 'ALGN', 'ALLE', 'AMAT', 'AMC', 'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMTM', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH', 'APTV', 'ASTS', 'ATO', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXON', 'AXP', 'AZO', 'BA', 'BABA', 'BAC', 'BALL', 'BAX', 'BBY', 'BDX', 'BEN', 'BG', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLDR', 'BLK', 'BMY', 'BR', 'BSX', 'BX', 'BXP', 'CAG', 'CAH', 'CARR', 'CB', 'CBOE', 'CBRE', 'CC', 'CCI', 'CCL', 'CDNS', 'CDW', 'CE', 'CEG', 'CF', 'CFG', 'CHD', 'CHRW', 'CHTR', 'CI', 'CL', 'CLOV', 'CLX', 'CMCSA', 'CME', 'CMG', 'CMI', 'CMS', 'CNC', 'CNP', 'COF', 'COO', 'COP', 'COR', 'COST', 'CPB', 'CPRT', 'CPT', 'CRL', 'CRM', 'CRWD', 'CSCO', 'CSGP', 'CSX', 'CTAS', 'CTRA', 'CTSH', 'CTVA', 'CVS', 'CVX', 'CZR', 'DAL', 'DE', 'DECK', 'DELL', 'DFS', 'DG', 'DGX', 'DHI', 'DHR', 'DIS', 'DJT', 'DLR', 'DLTR', 'DM', 'DOC', 'DOCU', 'DOV', 'DOW', 'DPZ', 'DRI', 'DTE', 'DUK', 'DVA', 'DVN', 'DXCM', 'EA', 'EBAY', 'ECL', 'ED', 'EFX', 'EG', 'EIX', 'EL', 'ELV', 'EMN', 'EMR', 'ENPH', 'EOG', 'EPAM', 'EQIX', 'EQR', 'EQT', 'ERIE', 'ES', 'ESS', 'ETN', 'ETR', 'EU', 'EVRG', 'EW', 'EXC', 'EXPD', 'EXPE', 'EXR', 'FANG', 'FAST', 'FCX', 'FDS', 'FDX', 'FE', 'FFIV', 'FI', 'FICO', 'FIS', 'FITB', 'FMC', 'FOX', 'FOXA', 'FRT', 'FSLR', 'FTNT', 'GAP', 'GD', 'GDDY', 'GE', 'GEHC', 'GEN', 'GEV', 'GILD', 'GIS', 'GL', 'GLD', 'GLW', 'GM', 'GME', 'GNRC', 'GOOG', 'GOOGL', 'GPC', 'GPN', 'GRMN', 'GS', 'GWW', 'HAL', 'HBAN', 'HCA', 'HD', 'HES', 'HIG', 'HII', 'HLT', 'HOLX', 'HON', 'HOOD', 'HPE', 'HPQ', 'HRL', 'HSIC', 'HST', 'HSY', 'HUBB', 'HUM', 'HWM', 'IBM', 'ICE', 'IEX', 'IFF', 'INCY', 'INTC', 'INTU', 'INVH', 'IP', 'IPA', 'IPG', 'IR', 'IRM', 'ISRG', 'ITW', 'IVZ', 'IWM', 'JBHT', 'JBL', 'JCI', 'JD', 'JKHY', 'JNJ', 'JNPR', 'JPM', 'KDP', 'KEYS', 'KHC', 'KIM', 'KKR', 'KLAC', 'KMB', 'KMI', 'KMX', 'KO', 'KR', 'KVUE', 'LDOS', 'LEN', 'LH', 'LHX', 'LIN', 'LKQ', 'LLY', 'LMT', 'LNT', 'LOGC', 'LRCX', 'LULU', 'LUNR', 'LVS', 'LW', 'LYB', 'LYV', 'MAA', 'MAR', 'MAS', 'MCD', 'MCHP', 'MCK', 'MCO', 'MDLZ', 'MDT', 'MET', 'META', 'MGM', 'MHK', 'MKC', 'MKTX', 'MLM', 'MMM', 'MNST', 'MO', 'MOH', 'MOS', 'MPC', 'MPWR', 'MRK', 'MRNA', 'MS', 'MSCI', 'MSFT', 'MSI', 'MSTR', 'MTB', 'MTCH', 'MTD', 'MU', 'NCLH', 'NDAQ', 'NDSN', 'NEE', 'NEM', 'NFLX', 'NIO', 'NKE', 'NOC', 'NRG', 'NSC', 'NTAP', 'NTRS', 'NUE', 'NVDA', 'NVR', 'NWS', 'NXPI', 'NYT', 'ODFL', 'OKE', 'OKLO', 'OMC', 'ORCL', 'ORLY', 'OTIS', 'OXY', 'PANW', 'PARA', 'PAYC', 'PAYX', 'PCAR', 'PCG', 'PEG', 'PEP', 'PFE', 'PFG', 'PG', 'PGR', 'PH', 'PHM', 'PLD', 'PLTR', 'PM', 'PNC', 'PNW', 'PODD', 'POOL', 'PPG', 'PR', 'PRU', 'PSA', 'PSX', 'PTC', 'PTON', 'PWR', 'PYPL', 'QBTS', 'QCOM', 'QQQ', 'QRVO', 'RCL', 'RDDT', 'REG', 'REGN', 'RF', 'RGTI', 'RIVN', 'RJF', 'RKLB', 'RL', 'RMD', 'ROK', 'ROL', 'ROP', 'ROST', 'RR', 'RTX', 'SBAC', 'SBUX', 'SCHW', 'SHW', 'SJM', 'SLB', 'SMCI', 'SMTC', 'SNPS', 'SOFI', 'SOLV', 'SPG', 'SPGI', 'SPY', 'SQQQ', 'SRE', 'STE', 'STLD', 'STX', 'STZ', 'SW', 'SWK', 'SWKS', 'SYF', 'SYK', 'SYY', 'TAP', 'TDG', 'TDY', 'TECH', 'TEL', 'TER', 'TFC', 'TFX', 'TGT', 'TJX', 'TLT', 'TMO', 'TMUS', 'TPL', 'TPR', 'TQQQ', 'TRGP', 'TROW', 'TRV', 'TSCO', 'TSLA', 'TSM', 'TSN', 'TT', 'TTD', 'TTWO', 'TWLO', 'TXN', 'TXT', 'TYL', 'UAL', 'UBER', 'UHS', 'ULTA', 'UNH', 'UNP', 'UPS', 'URI', 'USB', 'VICI', 'VLO', 'VOO', 'VRSN', 'VRTX', 'VST', 'VTR', 'VTRS', 'VZ', 'WAB', 'WAT', 'WBA', 'WBD', 'WDC', 'WEC', 'WEN', 'WFC', 'WH', 'WM', 'WMB', 'WMT', 'WST', 'WW', 'WY', 'WYNN', 'XEL', 'XOM', 'XYL', 'YUM', 'ZBH', 'ZBRA', 'ZTS'];
+  stopwords: string[] = [
+    "a", "about", "above", "after", "again", "against", "all", "also", "am", "an",
+    "and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before",
+    "being", "below", "between", "both", "but", "by", "can", "can't", "cannot",
+    "com", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing",
+    "don't", "down", "during", "each", "else", "ever", "few", "for", "from",
+    "further", "get", "had", "hadn't", "has", "hasn't", "have", "haven't", "having",
+    "he", "he'd", "he'll", "he's", "hence", "her", "here", "here's", "hers",
+    "herself", "him", "himself", "his", "how", "how's", "however", "http", "i",
+    "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "isn't", "it", "it's",
+    "its", "itself", "just", "k", "let's", "like", "me", "more", "most", "mustn't",
+    "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or",
+    "other", "otherwise", "ought", "our", "ours", "ourselves", "out", "over",
+    "own", "r", "same", "shall", "shan't", "she", "she'd", "she'll", "she's",
+    "should", "shouldn't", "since", "so", "some", "such", "than", "that", "that's",
+    "the", "their", "theirs", "them", "themselves", "then", "there", "there's",
+    "therefore", "these", "they", "they'd", "they'll", "they're", "they've",
+    "this", "those", "through", "to", "too", "under", "until", "up", "very",
+    "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't",
+    "what", "what's", "when", "when's", "where", "where's", "which", "while",
+    "who", "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't",
+    "www", "you", "you'd", "you'll", "you're", "you've", "your", "yours",
+    "yourself", "yourselves", "s", "t", "will", "don", "should", "now",
+    "stock", "trading", "account", "looking", "strategy", "market", "investing",
+    "forecast", "open", "next", "much", "know", "last", "sunday", "monday",
+    "tuesday", "wednesday", "thursday", "friday", "many"
+  ];
 
   stockTicker: string | null = '';
   loading: boolean = true;
@@ -94,7 +121,7 @@ export class AnaylsisComponent implements OnInit {
     this.stockTicker = this.route.snapshot.paramMap.get('ticker');
     this.service.getStock(this.stockTicker).subscribe({
       next: (result) => {
-        if (result && result.posts) {
+        if (result && result.posts.length > 0) {
           this.posts = this.sortPostsByNewest(result.posts);
           this.calculateAvgs(this.posts);
           this.getSentimentDays(this.posts);
@@ -102,6 +129,9 @@ export class AnaylsisComponent implements OnInit {
           this.generateSentimentDistribution(this.posts);
           this.generatePostVolumeChart(this.posts);
           this.generateWordClouds(this.posts);
+        }
+        else {
+          this.backToHome();
         }
         this.count++;
       }
@@ -419,6 +449,10 @@ export class AnaylsisComponent implements OnInit {
 
         if (stocksLower.includes(word)) {
           return; // Skip words found in this.stocks
+        }
+
+        if (this.stopwords.includes(word)) {
+          return;
         }
 
         if (word.length > 2) { // Filter out very short words
