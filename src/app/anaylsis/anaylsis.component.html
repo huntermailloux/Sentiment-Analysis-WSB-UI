@@ -115,6 +115,29 @@
       </div>
     </div>
 
+    <div class="graphs-container">
+      <div class="graph word-cloud">
+        <h3>Positive Word Cloud</h3>
+        <div id="wordCloudPositive"></div>
+        @if (!hasWords('positive')) {
+          <p class="n-a">N/A</p>
+        }
+      </div>
+      <div class="graph word-cloud">
+        <h3>Neutral Word Cloud</h3>
+        <div id="wordCloudNeutral"></div>
+        @if (!hasWords('neutral')) {
+          <p class="n-a">N/A</p>
+        }
+      </div>
+      <div class="graph word-cloud">
+        <h3>Negative Word Cloud</h3>
+        <div id="wordCloudNegative"></div>
+        @if (!hasWords('negative')) {
+          <p class="n-a">N/A</p>
+        }
+      </div>
+    </div>
 
   </mat-card>
 </div>

@@ -322,3 +322,33 @@
     transform: translate(-50%, -50%) rotate(-360deg);
   }
 }
+
+.word-cloud-container {
+  display: relative;
+  overflow: hidden;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.word-cloud {
+  display: flex;
+  text-align: center;
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+#wordCloudPositive, #wordCloudNeutral, #wordCloudNegative {
+  width: 550px;
+  height: 350px;
+  display: inline-block;
+}
+
+.n-a {
+  margin: -225px 0 0 0;
+  padding: 0;
+
+}
